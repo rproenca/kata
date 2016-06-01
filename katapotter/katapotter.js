@@ -7,9 +7,29 @@ const
     BOOK_PRICE = 8,
     DISCOUNTS = [1.0, 0.95, 0.90, 0.8, 0.75];
 
-function price(basket) {
+// Optimal discount (que_impota_que_funcione). It's better to have
+// two groups of 4 books than one group of 5 and and one group of 3.
+function calculateOptimalDiscount(groups, pos) {
+    if (groups[pos] === 5 && (groups[pos + 1] && groups[pos + 1] === 3)) {
+        --groups[pos];
+        ++groups[pos + 1];
+    } else if (groups[pos] === 3 && (groups[pos - 1] && groups[pos - 1] === 5)) {
+        ++groups[pos];
+        --groups[pos - 1];
+    }
+}
+
+function calculateTotal(groups) {
     let total = 0;
 
+    for (let i = 0; i < groups.length; i++) {
+        total += groups[i] * BOOK_PRICE * DISCOUNTS[groups[i] - 1];
+    }
+
+    return total;
+}
+
+function price(basket) {
     if (basket.length === 0) return 0;
     else {
         let groups = [], // books grouped by different titles
@@ -27,23 +47,12 @@ function price(basket) {
                     ++groups[pos];
                 }
 
-                // Optimal discount (que_impota_que_funcione)
-                if (groups[pos] === 5 && (groups[pos + 1] && groups[pos + 1] === 3)) {
-                    --groups[pos];
-                    ++groups[pos + 1];
-                } else if (groups[pos] === 3 && (groups[pos - 1] && groups[pos - 1] === 5)) {
-                    ++groups[pos];
-                    --groups[pos - 1];
-                }
+                calculateOptimalDiscount(groups, pos);
             }
         }
 
-        for (let i = 0; i < groups.length; i++) {
-            total += groups[i] * BOOK_PRICE * DISCOUNTS[groups[i] - 1];
-        }
+        return calculateTotal(groups);
     }
-
-    return total;
 }
 
 module.exports = {
