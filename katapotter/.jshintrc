@@ -1,0 +1,9 @@
+{
+    "globals": {
+        "process": true,
+        "require": true,
+        "console": true,
+        "browser": true,
+        "module": true
+    }
+}
